@@ -43,7 +43,6 @@ excludes = [
     'IPython',
     'notebook',
     'pytest',
-    'unittest',
 ]
 
 a = Analysis(
