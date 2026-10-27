@@ -35,8 +35,15 @@ class CalculationsView(ctk.CTkScrollableFrame):
 
         # Stored experimental observations table
         self.measurements: List[Dict[str, Any]] = []
+        self.optic_mode: str = "grating"
+        self.prism_engine = None
 
         self._create_widgets()
+
+    def set_optic_mode(self, mode: str, prism_engine=None):
+        """Switches mathematical cards between Diffraction Grating and Equilateral Prism."""
+        self.optic_mode = mode
+        self.prism_engine = prism_engine
 
     def _create_widgets(self):
         self.grid_columnconfigure(0, weight=1)
@@ -182,32 +189,50 @@ class CalculationsView(ctk.CTkScrollableFrame):
         order_m: int,
         v1: VernierReading,
         v2: VernierReading,
-        grating_d_nm: float
+        grating_d_nm: float,
+        optic_mode: str = "grating",
+        true_n: Optional[float] = None
     ):
         """Records current goniometer alignment into the laboratory observations table."""
         # Calculate corrected angle
         corr_deg = self.model.get_corrected_angle_from_verniers(v1, v2)
         dev_deg = abs((corr_deg + 180.0) % 360.0 - 180.0)
 
-        # Calculate experimental wavelength: λ = d * sin(θ) / |m|
-        if order_m != 0:
-            calc_wl_nm = (grating_d_nm * math.sin(math.radians(dev_deg))) / abs(order_m)
-            err_percent = abs(calc_wl_nm - true_wl_nm) / true_wl_nm * 100.0 if true_wl_nm > 0 else 0.0
+        if optic_mode == "prism":
+            # For 60° equilateral prism: n = 2 * sin((60° + dev_deg) / 2)
+            calc_n = 2.0 * math.sin(math.radians((60.0 + dev_deg) / 2.0))
+            if true_n and true_n > 0:
+                err_percent = abs(calc_n - true_n) / true_n * 100.0
+            else:
+                err_percent = 0.0
+            calc_val_str = f"n={calc_n:.4f}"
+            true_val_str = f"n={true_n:.4f}" if true_n else "--"
+            mode_tag = "Prism (n)"
         else:
-            calc_wl_nm = 0.0
-            err_percent = 0.0
+            # Calculate experimental wavelength: λ = d * sin(θ) / |m|
+            if order_m != 0:
+                calc_wl_nm = (grating_d_nm * math.sin(math.radians(dev_deg))) / abs(order_m)
+                err_percent = abs(calc_wl_nm - true_wl_nm) / true_wl_nm * 100.0 if true_wl_nm > 0 else 0.0
+            else:
+                calc_wl_nm = 0.0
+                err_percent = 0.0
+            calc_val_str = f"{calc_wl_nm:.2f}"
+            true_val_str = f"{true_wl_nm:.2f}"
+            mode_tag = f"m={order_m}"
 
         row_data = {
             "index": len(self.measurements) + 1,
             "line_name": line_name,
+            "mode_tag": mode_tag,
             "order_m": order_m,
             "v1_str": v1.readout_str,
             "v2_str": v2.readout_str,
             "corr_deg": corr_deg,
             "dev_deg": dev_deg,
-            "true_wl_nm": true_wl_nm,
-            "calc_wl_nm": calc_wl_nm,
-            "error_percent": err_percent
+            "true_val_str": true_val_str,
+            "calc_val_str": calc_val_str,
+            "error_percent": err_percent,
+            "optic_mode": optic_mode
         }
         self.measurements.append(row_data)
         self.render_measurements_table()
@@ -225,8 +250,8 @@ class CalculationsView(ctk.CTkScrollableFrame):
         font_row = FontManager.get_number_font(9, "normal")
 
         # Table Header
-        headers = ["#", "Line Name", "Order m", "Vernier 1", "Vernier 2", "θ (dev)", "λ Calc (nm)", "λ True (nm)", "Error %"]
-        col_widths = [30, 110, 60, 90, 90, 80, 90, 90, 70]
+        headers = ["#", "Line Name", "Mode/Order", "Vernier 1", "Vernier 2", "θ (dev)", "Calc Val", "True Val", "Error %"]
+        col_widths = [30, 110, 75, 85, 85, 75, 85, 85, 65]
 
         h_frame = ctk.CTkFrame(self.table_content_frame, fg_color="#272732", height=26)
         h_frame.pack(fill="x", pady=1)
@@ -252,12 +277,12 @@ class CalculationsView(ctk.CTkScrollableFrame):
             vals = [
                 str(row["index"]),
                 row["line_name"],
-                f"m={row['order_m']}",
+                row.get("mode_tag", f"m={row.get('order_m', 1)}"),
                 row["v1_str"],
                 row["v2_str"],
                 f"{row['dev_deg']:.2f}°",
-                f"{row['calc_wl_nm']:.2f}",
-                f"{row['true_wl_nm']:.2f}",
+                row.get("calc_val_str", f"{row.get('calc_wl_nm', 0.0):.2f}"),
+                row.get("true_val_str", f"{row.get('true_wl_nm', 0.0):.2f}"),
                 f"{row['error_percent']:.2f}%"
             ]
 

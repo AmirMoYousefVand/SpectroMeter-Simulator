@@ -11,6 +11,7 @@ from utils.color_utils import ColorUtils
 from utils.localization import LocalizationService
 from utils.font_manager import FontManager
 from utils.numeric_input import NumericInput
+from utils.resource_utils import apply_window_icon
 
 class CustomLineDialog(ctk.CTkToplevel):
     """Modal dialog for creating and inserting custom spectral lines."""
@@ -25,6 +26,7 @@ class CustomLineDialog(ctk.CTkToplevel):
         self.resizable(False, False)
         self.grab_set()
 
+        apply_window_icon(self)
         self._create_widgets()
 
     def _create_widgets(self):

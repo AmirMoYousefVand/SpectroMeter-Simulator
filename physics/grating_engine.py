@@ -38,12 +38,14 @@ class GratingEngine:
         lines_per_mm: float = 600.0,
         slit_width_mm: float = 0.05,
         beam_width_mm: float = 15.0,
-        oblique_incidence_deg: float = 0.0
+        oblique_incidence_deg: float = 0.0,
+        grating_slit_ratio: float = 0.5
     ):
         self.lines_per_mm = max(10.0, float(lines_per_mm))
         self.slit_width_mm = max(0.005, float(slit_width_mm))
         self.beam_width_mm = max(1.0, float(beam_width_mm))
         self.oblique_incidence_deg = float(oblique_incidence_deg)
+        self.grating_slit_ratio = float(grating_slit_ratio)
 
     @property
     def d_m(self) -> float:
@@ -57,8 +59,13 @@ class GratingEngine:
 
     @property
     def slit_width_m(self) -> float:
-        """Entrance slit width in meters."""
+        """Collimator entrance slit width in meters (controls instrumental broadening)."""
         return self.slit_width_mm * 1e-3
+
+    @property
+    def grating_groove_width_m(self) -> float:
+        """Grating transparent groove opening width a in meters (a < d)."""
+        return self.d_m * self.grating_slit_ratio
 
     @property
     def illuminated_lines_Nt(self) -> float:
@@ -89,14 +96,13 @@ class GratingEngine:
         """
         Checks if diffraction order coincides with single-slit diffraction minimum:
         m / p = d / a
+        When d/a is an integer k, orders k, 2k, ... vanish.
         """
-        if order_m == 0:
+        if order_m == 0 or self.grating_slit_ratio <= 0.0 or self.grating_slit_ratio >= 1.0:
             return False
-        ratio = self.d_m / self.slit_width_m
-        if ratio <= 0:
-            return False
+        ratio = 1.0 / self.grating_slit_ratio
         nearest_ratio = round(ratio)
-        if nearest_ratio >= 1 and abs(ratio - nearest_ratio) < 0.08:
+        if nearest_ratio >= 1 and abs(ratio - nearest_ratio) < 0.05:
             if order_m % nearest_ratio == 0:
                 return True
         return False
@@ -181,12 +187,12 @@ class GratingEngine:
                 min_dlambda = line.wavelength_nm / r_power if r_power > 0 else 0.0
 
                 # Single slit diffraction envelope factor [sin(beta)/beta]^2
-                beta = (math.pi * self.slit_width_m / (line.wavelength_nm * 1e-9)) * (math.sin(ang_rad) - math.sin(theta_i_rad))
+                beta = (math.pi * self.grating_groove_width_m / (line.wavelength_nm * 1e-9)) * (math.sin(ang_rad) - math.sin(theta_i_rad))
                 sinc_beta = math.sin(beta) / beta if abs(beta) > 1e-7 else 1.0
                 envelope = sinc_beta * sinc_beta
 
                 is_missing = self.check_missing_order(order)
-                eff_intensity = 0.0 if is_missing else float(np.clip(line.intensity * envelope, 0.01, 1.0))
+                eff_intensity = 0.0 if is_missing else float(np.clip(line.intensity * envelope, 0.0, 1.0))
 
                 peaks.append(DiffractedPeak(
                     line_name=line.name,

@@ -155,9 +155,11 @@ class SpectrometerModel:
 
     def get_corrected_angle_from_verniers(self, v1: VernierReading, v2: VernierReading) -> float:
         """
-        Calculates eccentricity-corrected angle by averaging V1 and V2:
-        θ_corr = (V1 + (V2 - 180°)) / 2
+        Calculates eccentricity-corrected angle by circular averaging V1 and (V2 - 180°):
+        θ_corr = V1 + circular_diff(V2 - 180°, V1) / 2
+        Correctly handles wrap-around near 0° / 360°.
         """
-        v1_val = v1.decimal_degrees
+        v1_val = v1.decimal_degrees % 360.0
         v2_val = (v2.decimal_degrees - 180.0) % 360.0
-        return ((v1_val + v2_val) / 2.0) % 360.0
+        diff = (v2_val - v1_val + 180.0) % 360.0 - 180.0
+        return (v1_val + diff / 2.0) % 360.0

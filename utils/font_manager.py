@@ -10,12 +10,13 @@ import ctypes
 from typing import Optional
 import customtkinter as ctk
 import matplotlib.font_manager as fm
+from utils.resource_utils import resource_path
 
 class FontManager:
     """Manages cross-platform font loading and provides CTkFont and Matplotlib font instances."""
 
     _INITIALIZED = False
-    _FONT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "fonts")
+    _FONT_DIR = resource_path(os.path.join("assets", "fonts"))
 
     PERSIAN_FAMILY = "Vazirmatn"
     ENGLISH_FAMILY = "Space Grotesk"

@@ -16,6 +16,15 @@ if hasattr(sys.stdout, "reconfigure"):
     except Exception:
         pass
 
+# Bind Windows Taskbar AppUserModelID to display custom icon
+if sys.platform.startswith("win"):
+    try:
+        import ctypes
+        app_id = "spectrometer.simulator.optical.goniometer.v1_0_0"
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(app_id)
+    except Exception:
+        pass
+
 # Ensure project root is in path
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 if PROJECT_ROOT not in sys.path:

@@ -11,6 +11,7 @@ from physics.constants import SPECTRAL_SOURCES
 from utils.localization import LocalizationService
 from utils.font_manager import FontManager
 from utils.numeric_input import NumericInput
+from utils.resource_utils import apply_window_icon
 
 class UnknownElementDialog(ctk.CTkToplevel):
     """Interactive quiz window for identifying unknown gas discharge lamps."""
@@ -25,6 +26,7 @@ class UnknownElementDialog(ctk.CTkToplevel):
         self.resizable(False, False)
         self.grab_set()
 
+        apply_window_icon(self)
         self._create_widgets()
 
     def _create_widgets(self):

@@ -28,6 +28,7 @@ from physics.spectrometer_model import SpectrometerModel
 from physics.grating_engine import GratingEngine, DiffractedPeak
 from physics.prism_engine import PrismEngine, RefractedPeak
 from physics.error_model import SpectrometerErrorModel, ErrorParameters
+from utils.resource_utils import resource_path, apply_window_icon
 from physics.constants import SPECTRAL_SOURCES, GRATING_PRESETS
 from utils.localization import LocalizationService
 from utils.font_manager import FontManager
@@ -85,20 +86,7 @@ class MainWindow(ctk.CTk):
 
     def _set_window_icon(self):
         """Applies application icon to taskbar and title bar."""
-        logo_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "Logo")
-        ico_path = os.path.join(logo_dir, "favicon.ico")
-        png_path = os.path.join(logo_dir, "icon.png")
-
-        if os.path.exists(ico_path):
-            try:
-                self.iconbitmap(ico_path)
-            except Exception:
-                pass
-        if os.path.exists(png_path):
-            try:
-                self.iconphoto(True, tk.PhotoImage(file=png_path))
-            except Exception:
-                pass
+        apply_window_icon(self)
 
     def _create_layout(self):
         """Constructs top bar, sidebar control panel, tabview, metrics bar, and footer."""
@@ -374,6 +362,7 @@ class MainWindow(ctk.CTk):
         self.optic_mode = new_mode
         self.view_apparatus_2d.optic_mode = new_mode
         self.view_apparatus_3d.optic_mode = new_mode
+        self.view_calculations.set_optic_mode(new_mode, self.prism_engine)
         self._on_parameter_changed()
 
     def _on_reset_all(self):
@@ -472,10 +461,12 @@ class MainWindow(ctk.CTk):
             line_name = self.centered_peak.line_name
             true_wl = self.centered_peak.wavelength_nm
             order = getattr(self.centered_peak, "order_m", 1)
+            true_n = getattr(self.centered_peak, "refractive_index_n", None)
         else:
             line_name = "Reticle Mark"
             true_wl = 0.0
             order = 1
+            true_n = None
 
         self.view_calculations.add_measurement_row(
             line_name=line_name,
@@ -483,7 +474,9 @@ class MainWindow(ctk.CTk):
             order_m=order,
             v1=v1,
             v2=v2,
-            grating_d_nm=self.grating_engine.d_nm
+            grating_d_nm=self.grating_engine.d_nm,
+            optic_mode=self.optic_mode,
+            true_n=true_n
         )
         AudioEffects.play_clamp_sound()
 

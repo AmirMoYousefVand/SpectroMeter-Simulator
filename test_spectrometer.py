@@ -300,6 +300,43 @@ def test_prism_cauchy_physics():
     print("  ✓ Prism Cauchy dispersion and minimum deviation verified.")
 
 
+def test_vernier_circular_wraparound():
+    print("[11/12] Testing Vernier Circular Wrap-Around Near 0°/360° Boundary...")
+    model = SpectrometerModel()
+    # Vernier 1 reads 359° 59' (359.9833°)
+    v1 = SpectrometerModel.decompose_angle_to_vernier(359.983333)
+    # Vernier 2 reads 180° 01' (180.0167°) -> V2 - 180° = 0.0167°
+    v2 = SpectrometerModel.decompose_angle_to_vernier(180.016667)
+
+    # Average must be 0.0° (or 360.0°), NEVER 180.0°!
+    corr = model.get_corrected_angle_from_verniers(v1, v2)
+    assert abs(corr - 0.0) < 0.01 or abs(corr - 360.0) < 0.01, f"Circular wrap-around failed: got {corr}°"
+    print(f"  ✓ Vernier circular wrap-around verified: {corr:.4f}° successfully resolved.")
+
+
+def test_grating_missing_orders_physics():
+    print("[12/12] Testing Grating Groove Ratio & Absent Spectra (Missing Orders)...")
+    from physics.constants import SPECTRAL_SOURCES
+    # With grating_slit_ratio = 0.5 (d/a = 2), all even orders m = 2, 4 must vanish
+    engine = GratingEngine(lines_per_mm=300.0, grating_slit_ratio=0.5)
+
+    assert engine.check_missing_order(1) is False
+    assert engine.check_missing_order(2) is True, "Order m=2 must be absent for d/a=2"
+    assert engine.check_missing_order(3) is False
+    assert engine.check_missing_order(4) is True, "Order m=4 must be absent for d/a=2"
+
+    source = SPECTRAL_SOURCES["Mercury (Hg)"]
+    peaks = engine.compute_all_peaks(source, max_order=2)
+
+    order_2_peaks = [p for p in peaks if p.order_m == 2]
+    assert len(order_2_peaks) > 0, "Order 2 peaks must exist in list"
+    for p in order_2_peaks:
+        assert p.is_missing_order is True, f"Peak {p.line_name} in order 2 must be marked missing"
+        assert p.intensity == 0.0, f"Peak {p.line_name} intensity must be 0.0"
+
+    print("  ✓ Grating absent spectra (missing orders) verified.")
+
+
 def run_all_tests():
     print("=" * 70)
     print("RUNNING COMPLETE SPECTROMETER SIMULATOR TEST SUITE")
@@ -315,9 +352,11 @@ def run_all_tests():
     test_localization_and_fonts()
     test_gui_instantiation_smoke()
     test_prism_cauchy_physics()
+    test_vernier_circular_wraparound()
+    test_grating_missing_orders_physics()
 
     print("=" * 70)
-    print("ALL 10 TEST SUITES COMPLETED SUCCESSFULLY! (100% PASS)")
+    print("ALL 12 TEST SUITES COMPLETED SUCCESSFULLY! (100% PASS)")
     print("=" * 70)
 
 if __name__ == "__main__":
