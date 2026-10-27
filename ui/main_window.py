@@ -232,7 +232,8 @@ class MainWindow(ctk.CTk):
 
         self.view_vernier = VernierView(
             self.tab_vern,
-            model=self.model
+            model=self.model,
+            on_angle_change=self._on_angle_dragged
         )
         self.view_vernier.grid(row=0, column=0, sticky="nsew")
 
