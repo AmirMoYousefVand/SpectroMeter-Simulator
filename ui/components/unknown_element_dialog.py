@@ -122,8 +122,8 @@ class UnknownElementDialog(ctk.CTkToplevel):
             is_correct = true_name[:4] in guess
 
         if is_correct:
-            msg = f"✓ آفرین! پاسخ کاملاً درست است. عنصر مجهول {true_name} بود." if is_fa else f"✓ Correct! The unknown gas was indeed {true_name}."
+            msg = f"[صحیح] پاسخ کاملاً درست است. عنصر مجهول {true_name} بود." if is_fa else f"[Correct] The unknown gas was indeed {true_name}."
             self.feedback_lbl.configure(text=msg, text_color="#10B981")
         else:
-            msg = f"✗ درست نبود. دوباره اندازه‌گیری کنید یا خطوط دیگر را بسنجید." if is_fa else "✗ Incorrect deduction. Inspect other spectral lines or re-measure angles."
+            msg = f"[نادرست] دوباره اندازه‌گیری کنید یا خطوط دیگر را بسنجید." if is_fa else "[Incorrect] Inspect other spectral lines or re-measure angles."
             self.feedback_lbl.configure(text=msg, text_color="#EF4444")

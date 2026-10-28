@@ -8,10 +8,12 @@ and complete parameter resets.
 
 import os
 import sys
+import webbrowser
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from typing import Dict, Any, Optional
 import customtkinter as ctk
+from PIL import Image
 
 from config import (
     APP_TITLE,
@@ -142,10 +144,21 @@ class MainWindow(ctk.CTk):
         )
         self.theme_btn.pack(side=btn_pack_side, padx=5, pady=6)
 
-        # Darkroom Ambient Lighting Toggle
+        # Darkroom Ambient Lighting Toggle with vector icon
+        moon_img = None
+        moon_path = resource_path(os.path.join("assets", "icons", "ui", "moon.png"))
+        if os.path.exists(moon_path):
+            try:
+                pil_m = Image.open(moon_path).resize((14, 14), Image.Resampling.LANCZOS)
+                moon_img = ctk.CTkImage(light_image=pil_m, dark_image=pil_m, size=(14, 14))
+            except Exception:
+                pass
+
         self.darkroom_btn = ctk.CTkButton(
             top_bar,
-            text="🌙 " + LocalizationService.t("darkroom_toggle"),
+            image=moon_img,
+            compound="left",
+            text=" " + LocalizationService.t("darkroom_toggle"),
             font=font_btn,
             width=92,
             height=28,
@@ -155,10 +168,25 @@ class MainWindow(ctk.CTk):
         )
         self.darkroom_btn.pack(side=btn_pack_side, padx=5, pady=6)
 
-        # Sound Mute Toggle
+        # Sound Mute Toggle with vector icon
+        snd_on_path = resource_path(os.path.join("assets", "icons", "ui", "sound_on.png"))
+        snd_mute_path = resource_path(os.path.join("assets", "icons", "ui", "sound_mute.png"))
+        self.snd_on_img = None
+        self.snd_mute_img = None
+        if os.path.exists(snd_on_path):
+            try:
+                pil_so = Image.open(snd_on_path).resize((14, 14), Image.Resampling.LANCZOS)
+                self.snd_on_img = ctk.CTkImage(light_image=pil_so, dark_image=pil_so, size=(14, 14))
+                pil_sm = Image.open(snd_mute_path).resize((14, 14), Image.Resampling.LANCZOS)
+                self.snd_mute_img = ctk.CTkImage(light_image=pil_sm, dark_image=pil_sm, size=(14, 14))
+            except Exception:
+                pass
+
         self.sound_btn = ctk.CTkButton(
             top_bar,
-            text="🔊 Sound",
+            image=self.snd_on_img,
+            compound="left",
+            text=" Sound",
             font=font_num,
             width=76,
             height=28,
@@ -269,11 +297,36 @@ class MainWindow(ctk.CTk):
         # ----------------------------------------------------------------------
         # ROW 2: Footer Bar (Copyright & GitHub Link)
         # ----------------------------------------------------------------------
-        footer_bar = ctk.CTkFrame(self, fg_color="#121216", height=24, corner_radius=0)
+        footer_bar = ctk.CTkFrame(self, fg_color="#121216", height=28, corner_radius=0)
         footer_bar.grid(row=2, column=0, columnspan=2, sticky="ew")
 
         copy_txt = "Optical Spectrometer Simulator © 2026 — Created for Advanced Wave Optics Education"
-        ctk.CTkLabel(footer_bar, text=copy_txt, font=font_num, text_color="#64748B").pack(side="left", padx=16)
+        ctk.CTkLabel(footer_bar, text=copy_txt, font=font_num, text_color="#64748B").pack(side="left", padx=16, pady=2)
+
+        # GitHub Repo Link Button
+        gh_img = None
+        gh_path = resource_path(os.path.join("assets", "Logo", "github-mark.png"))
+        if os.path.exists(gh_path):
+            try:
+                pil_gh = Image.open(gh_path).resize((14, 14), Image.Resampling.LANCZOS)
+                gh_img = ctk.CTkImage(light_image=pil_gh, dark_image=pil_gh, size=(14, 14))
+            except Exception:
+                pass
+
+        btn_gh = ctk.CTkButton(
+            footer_bar,
+            image=gh_img,
+            text="GitHub Repository",
+            font=font_num,
+            fg_color="transparent",
+            hover_color="#1e1e24",
+            text_color="#94A3B8",
+            height=22,
+            width=130,
+            cursor="hand2",
+            command=lambda: webbrowser.open_new_tab("https://github.com/AmirMoYousefVand/SpectroMeter-Simulator")
+        )
+        btn_gh.pack(side="right", padx=16, pady=2)
 
     def _update_tabview_titles(self):
         """Updates tabview segmented button labels for the active language."""
@@ -319,7 +372,8 @@ class MainWindow(ctk.CTk):
         muted = not AudioEffects.is_muted()
         AudioEffects.set_muted(muted)
         self.sound_btn.configure(
-            text="🔇 Muted" if muted else "🔊 Sound",
+            image=self.snd_mute_img if muted else self.snd_on_img,
+            text=" Muted" if muted else " Sound",
             fg_color="#EF4444" if muted else "#10B981"
         )
 
@@ -335,7 +389,7 @@ class MainWindow(ctk.CTk):
         self.title_lbl.configure(text=LocalizationService.t("app_title"), font=FontManager.get_ui_font(14, "bold", is_fa))
         self.lang_btn.configure(text=LocalizationService.t("lang_switch"), font=FontManager.get_persian_font(11, "bold"))
         self.theme_btn.configure(text=LocalizationService.t("theme_toggle"), font=FontManager.get_ui_font(11, "bold", is_fa))
-        self.darkroom_btn.configure(text="🌙 " + LocalizationService.t("darkroom_toggle"), font=FontManager.get_ui_font(11, "bold", is_fa))
+        self.darkroom_btn.configure(text=" " + LocalizationService.t("darkroom_toggle"), font=FontManager.get_ui_font(11, "bold", is_fa))
 
         # Re-pack header according to RTL direction
         self.title_lbl.pack_forget()
