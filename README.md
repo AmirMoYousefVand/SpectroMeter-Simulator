@@ -4,7 +4,7 @@
 [![Platform Windows](https://img.shields.io/badge/platform-Windows%2064--bit-0078D6.svg)](https://github.com/AmirMoYousefVand/SpectroMeter-Simulator)
 [![GUI CustomTkinter](https://img.shields.io/badge/GUI-CustomTkinter-10B981.svg)](https://github.com/TomSchimansky/CustomTkinter)
 [![License MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Release v1.0.0](https://img.shields.io/badge/release-v1.0.0-cyan.svg)](https://github.com/AmirMoYousefVand/SpectroMeter-Simulator/releases/tag/v1.0.0)
+[![Release v1.1.0](https://img.shields.io/badge/release-v1.1.0-cyan.svg)](https://github.com/AmirMoYousefVand/SpectroMeter-Simulator/releases/tag/v1.1.0)
 
 > **[مطالعه راهنمای کامل به زبان فارسی (Persian Documentation)](README.fa.md)**
 
@@ -216,6 +216,20 @@ pip install pyinstaller
 python -m PyInstaller --clean spectrometer.spec
 ```
 The output binary will be located at `dist/SpectroMeter_Simulator.exe`.
+
+---
+
+## Release History
+
+### v1.1.0 (Fall 2026 / 1405)
+- **Vector Icons**: Replaced all Unicode emojis with clean, open-source vector UI icons (moon, volume on/mute).
+- **GitHub Footer**: Added direct repository link button with official GitHub icon in the main window footer.
+- **Deduction Dialog**: Cleaned feedback formatting without emoji or glyph artifacts.
+- **Typography**: Complete Vazirmatn and Space Grotesk font integration with native Windows Uniscribe shaping.
+- **Standalone Windows Executable**: Bundled and published standalone `.exe` release.
+
+### v1.0.0
+- Initial public release with Fraunhofer diffraction, Cauchy prism dispersion, dual vernier reading, Balmer series Rydberg extraction, and OMML Word export.
 
 ---
 

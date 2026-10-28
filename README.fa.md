@@ -4,7 +4,7 @@
 [![Platform Windows](https://img.shields.io/badge/platform-Windows%2064--bit-0078D6.svg)](https://github.com/AmirMoYousefVand/SpectroMeter-Simulator)
 [![GUI CustomTkinter](https://img.shields.io/badge/GUI-CustomTkinter-10B981.svg)](https://github.com/TomSchimansky/CustomTkinter)
 [![License MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Release v1.0.0](https://img.shields.io/badge/release-v1.0.0-cyan.svg)](https://github.com/AmirMoYousefVand/SpectroMeter-Simulator/releases/tag/v1.0.0)
+[![Release v1.1.0](https://img.shields.io/badge/release-v1.1.0-cyan.svg)](https://github.com/AmirMoYousefVand/SpectroMeter-Simulator/releases/tag/v1.1.0)
 
 > **[Read Full Documentation in English](README.md)**
 
@@ -215,6 +215,19 @@ pip install pyinstaller
 python -m PyInstaller --clean spectrometer.spec
 ```
 فایل اجرایی در مسیر `dist/SpectroMeter_Simulator.exe` تولید می‌شود.
+
+---
+
+## تاریخچه نسخه‌ها
+
+### نسخه v1.1.0 (پاییز ۱۴۰۵)
+- **آیکون‌های وکتور اختصاصی**: جایگزینی تمامی کاراکترهای ایموجی با آیکون‌های وکتور استاندارد و مدرن (حالت تاریک‌خانه و بلندگو).
+- **پیوند گیت‌هاب**: افزودن دکمه دسترسی مستقیم به مخزن گیت‌هاب در فوتر پنجره اصلی.
+- **بهینه‌سازی تایپوگرافی**: اعمال کامل فونت‌های وزیرمتن و Space Grotesk با موتور متن نیتیو ویندوز.
+- **پکیج مستقل**: ارائه و پیوست فایل نصبی مستقل برای ویندوز در بخش Releases.
+
+### نسخه v1.0.0
+- انتشار اولیه شبیه‌ساز با مدل پراش توری، پاشندگی منشور، ورنیه دوطرفه، استخراج ریدبرگ و خروجی Word فرمول‌دار OMML.
 
 ---
 
