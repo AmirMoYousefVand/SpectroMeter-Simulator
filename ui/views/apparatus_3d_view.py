@@ -67,30 +67,30 @@ class Apparatus3DView(ctk.CTkFrame):
         self.lbl_cam = ctk.CTkLabel(toolbar, text=LocalizationService.t("cam_label"), font=font_btn)
         self.lbl_cam.pack(side="left", padx=(8, 4))
 
-        self.btn_cam_persp = ctk.CTkButton(toolbar, text=LocalizationService.t("cam_perspective"), width=78, height=24, font=font_btn, command=self._set_cam_perspective)
-        self.btn_cam_persp.pack(side="left", padx=2)
+        self.btn_cam_persp = ctk.CTkButton(toolbar, text=LocalizationService.t("cam_perspective"), width=68, height=22, font=font_btn, command=self._set_cam_perspective)
+        self.btn_cam_persp.pack(side="left", padx=1)
 
-        self.btn_cam_top = ctk.CTkButton(toolbar, text=LocalizationService.t("cam_top"), width=60, height=24, font=font_btn, command=self._set_cam_top)
-        self.btn_cam_top.pack(side="left", padx=2)
+        self.btn_cam_top = ctk.CTkButton(toolbar, text=LocalizationService.t("cam_top"), width=52, height=22, font=font_btn, command=self._set_cam_top)
+        self.btn_cam_top.pack(side="left", padx=1)
 
-        self.btn_cam_eye = ctk.CTkButton(toolbar, text=LocalizationService.t("cam_eyepiece"), width=78, height=24, font=font_btn, command=self._set_cam_eyepiece)
-        self.btn_cam_eye.pack(side="left", padx=2)
+        self.btn_cam_eye = ctk.CTkButton(toolbar, text=LocalizationService.t("cam_eyepiece"), width=68, height=22, font=font_btn, command=self._set_cam_eyepiece)
+        self.btn_cam_eye.pack(side="left", padx=1)
 
-        self.btn_cam_front = ctk.CTkButton(toolbar, text=LocalizationService.t("cam_front"), width=56, height=24, font=font_btn, command=self._set_cam_front)
-        self.btn_cam_front.pack(side="left", padx=2)
+        self.btn_cam_front = ctk.CTkButton(toolbar, text=LocalizationService.t("cam_front"), width=48, height=22, font=font_btn, command=self._set_cam_front)
+        self.btn_cam_front.pack(side="left", padx=1)
 
         # Rotation Controls
         self.lbl_rot = ctk.CTkLabel(toolbar, text=LocalizationService.t("rot_label"), font=font_btn)
-        self.lbl_rot.pack(side="left", padx=(12, 4))
+        self.lbl_rot.pack(side="left", padx=(8, 2))
 
-        ctk.CTkButton(toolbar, text="◀", width=28, height=24, font=font_num, command=lambda: self._rotate_camera(azim_delta=-10)).pack(side="left", padx=1)
-        ctk.CTkButton(toolbar, text="▶", width=28, height=24, font=font_num, command=lambda: self._rotate_camera(azim_delta=10)).pack(side="left", padx=1)
-        ctk.CTkButton(toolbar, text="▲", width=28, height=24, font=font_num, command=lambda: self._rotate_camera(elev_delta=6)).pack(side="left", padx=1)
-        ctk.CTkButton(toolbar, text="▼", width=28, height=24, font=font_num, command=lambda: self._rotate_camera(elev_delta=-6)).pack(side="left", padx=1)
+        ctk.CTkButton(toolbar, text="◀", width=22, height=22, font=font_num, command=lambda: self._rotate_camera(azim_delta=-10)).pack(side="left", padx=1)
+        ctk.CTkButton(toolbar, text="▶", width=22, height=22, font=font_num, command=lambda: self._rotate_camera(azim_delta=10)).pack(side="left", padx=1)
+        ctk.CTkButton(toolbar, text="▲", width=22, height=22, font=font_num, command=lambda: self._rotate_camera(elev_delta=6)).pack(side="left", padx=1)
+        ctk.CTkButton(toolbar, text="▼", width=22, height=22, font=font_num, command=lambda: self._rotate_camera(elev_delta=-6)).pack(side="left", padx=1)
 
         # Zoom Controls
-        ctk.CTkButton(toolbar, text="+", width=28, height=24, font=font_num, command=lambda: self._apply_zoom_factor(1.15)).pack(side="left", padx=(10, 1))
-        ctk.CTkButton(toolbar, text="-", width=28, height=24, font=font_num, command=lambda: self._apply_zoom_factor(1.0 / 1.15)).pack(side="left", padx=1)
+        ctk.CTkButton(toolbar, text="+", width=22, height=22, font=font_num, command=lambda: self._apply_zoom_factor(1.15)).pack(side="left", padx=(6, 1))
+        ctk.CTkButton(toolbar, text="-", width=22, height=22, font=font_num, command=lambda: self._apply_zoom_factor(1.0 / 1.15)).pack(side="left", padx=1)
 
         # Telemetry badge
         self.telemetry_label = ctk.CTkLabel(

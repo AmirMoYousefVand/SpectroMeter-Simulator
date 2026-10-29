@@ -107,7 +107,7 @@ class Apparatus2DView(ctk.CTkFrame):
 
         cx = w / 2.0
         cy = h / 2.0
-        r_scale = min(w, h) * 0.32
+        r_scale = min(w, h) * 0.28
 
         # 0. Optical Breadboard Grid (Threaded M6 Mounting Holes)
         grid_step = 28

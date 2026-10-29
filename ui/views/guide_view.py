@@ -123,7 +123,7 @@ class GuideView(ctk.CTkScrollableFrame):
                     text=line,
                     font=font_body,
                     text_color="#E2E8F0",
-                    wraplength=1050,
+                    wraplength=760,
                     justify="right" if is_fa else "left"
                 )
                 lbl_line.grid(row=l_idx + 1, column=0, sticky="e" if is_fa else "w", padx=16, pady=2)

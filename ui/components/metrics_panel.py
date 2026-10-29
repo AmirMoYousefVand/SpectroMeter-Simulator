@@ -36,7 +36,8 @@ class MetricsPanel(ctk.CTkFrame):
         font_btn = FontManager.get_ui_font(11, "bold", is_fa)
         font_line = FontManager.get_persian_font(11, "bold") if is_fa else font_num
 
-        self.grid_columnconfigure((0, 1, 2, 3, 4), weight=1)
+        self.grid_columnconfigure((0, 1, 2, 4), weight=1)
+        self.grid_columnconfigure(3, weight=2)
 
         # Tile 1: Telescope Angle
         t1 = ctk.CTkFrame(self, fg_color="transparent")
